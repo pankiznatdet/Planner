@@ -1,5 +1,5 @@
 // Planner PWA — service worker
-const CACHE = 'planner-v2';
+const CACHE = 'planner-v4';
 const ASSETS = [
   './',
   './index.html',
