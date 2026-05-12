@@ -1153,7 +1153,7 @@ input, textarea, select {
 'use strict';
 
 /* ========== CONSTANTS ========== */
-const STORAGE_KEY = 'plannerApp.v1';
+const STORAGE_KEY = 'plannerApp.v2';
 
 const CATEGORIES = {
   lansman:  { label: 'Lansman',  icon: 'ic-rocket' },
@@ -1824,7 +1824,7 @@ function wire() {
 
 /* ========== INIT ========== */
 function init() {
-  if (!load() || state.events.length === 0) seed();
+  load();
   wire();
   renderHome();
 }
