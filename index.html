@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#F2F2F4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Planner">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Planner</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #F2F2F4;
+  --card: #FFFFFF;
+  --card-soft: #F7F7F8;
+  --text-primary: #0A0A0A;
+  --text-secondary: #6B6B6B;
+  --text-tertiary: #A8A8AC;
+  --text-faint: #C8C8CC;
+  --border: rgba(0, 0, 0, 0.06);
+  --border-strong: rgba(0, 0, 0, 0.10);
+  --black: #0A0A0A;
+  --gold: #C9A961;
+  --red: #C44A3F;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 2px 12px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-fab: 0 8px 28px rgba(0, 0, 0, 0.22);
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --font-display: 'Fraunces', 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  background: var(--bg);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 15px;
+  line-height: 1.5;
+  overscroll-behavior-y: contain;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: calc(82px + env(safe-area-inset-bottom));
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+.icon { display: inline-block; width: 1em; height: 1em; vertical-align: middle; flex-shrink: 0; }
+.icon svg { width: 100%; height: 100%; display: block; }
+
+/* ========== APP ========== */
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: env(safe-area-inset-top) 0 0;
+  position: relative;
+}
+
+.view { display: none; padding: 8px 22px 24px; }
+.view.active { display: block; animation: fadeIn .25s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ========== HEADER ========== */
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-top: 18px;
+  margin-bottom: 14px;
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  max-width: 78%;
+}
+
+.filter-btn, .icon-btn-round {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  font-size: 18px;
+  color: var(--text-primary);
+  transition: transform .15s, background .15s;
+}
+.filter-btn:active, .icon-btn-round:active { transform: scale(0.94); background: var(--card-soft); }
+
+.stats {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.stats .sep { color: var(--text-faint); padding: 0 6px; }
+
+/* ========== TABS ========== */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 22px;
+  align-items: center;
+}
+
+.tab {
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all .18s;
+}
+.tab.active {
+  background: var(--card);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+.tab .count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--card-soft);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+}
+.tab.active .count { background: var(--bg); color: var(--text-primary); }
+
+/* ========== EVENT LIST ========== */
+.event-list { display: flex; flex-direction: column; gap: 12px; }
+
+.empty-state {
+  text-align: center;
+  padding: 56px 20px;
+  color: var(--text-tertiary);
+}
+.empty-state .sparkle-mark { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state p {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.empty-state small {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* Hero card (SIRADAKI) */
+.hero-card {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 22px 22px 18px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.hero-card:active { transform: scale(0.99); }
+
+.hero-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.hero-meta {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+.hero-divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 14px;
+}
+
+.hero-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-row .icon-square {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--card-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.hero-row .summary { flex: 1; min-width: 0; }
+.hero-row .summary-main {
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+.hero-row .summary-sub {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.hero-row .arrow-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--card-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+/* Regular event card */
+.event-card {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 18px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: transform .15s;
+}
+.event-card:active { transform: scale(0.99); }
+
+.event-card .icon-square {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--card-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.event-card .body { flex: 1; min-width: 0; }
+.event-card .title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.2;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
+.event-card .date {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.event-card .cat {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.event-card .right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.event-card .days-pill {
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+.event-card .arrow {
+  font-size: 16px;
+  color: var(--text-tertiary);
+  opacity: 0.9;
+}
+
+/* ========== FAB ========== */
+.fab {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(94px + env(safe-area-inset-bottom));
+  background: var(--black);
+  color: #fff;
+  border-radius: 999px;
+  padding: 14px 22px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  box-shadow: var(--shadow-fab);
+  z-index: 50;
+  transition: transform .15s;
+}
+.fab:active { transform: translateX(-50%) scale(0.96); }
+.fab .icon { font-size: 16px; }
+
+/* ========== BOTTOM NAV ========== */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(242, 242, 244, 0.92);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 12px calc(14px + env(safe-area-inset-bottom));
+  z-index: 100;
+  border-top: 1px solid var(--border);
+}
+
+.tabbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-faint);
+  flex: 1;
+  max-width: 100px;
+  transition: color .15s;
+}
+.tabbar-item.active { color: var(--text-primary); }
+.tabbar-item .ic { font-size: 20px; }
+.tabbar-item:active { opacity: 0.7; }
+
+/* ========== DETAIL VIEW ========== */
+.detail-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0 0;
+}
+.pill-tag {
+  background: var(--card);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--shadow-sm);
+}
+.pill-tag .icon { font-size: 13px; }
+
+.detail-hero {
+  text-align: center;
+  padding: 26px 0 22px;
+}
+.detail-hero .icon-square {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: var(--card);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+}
+
+.detail-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+.detail-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+.date-card, .desc-card {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.date-card .date-icon, .desc-card .desc-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--card-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.date-card .day-num {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.date-card .day-info { flex: 1; min-width: 0; line-height: 1.25; }
+.date-card .day-info .month { font-size: 15px; color: var(--text-primary); font-weight: 500; }
+.date-card .day-info .weekday { font-size: 13px; color: var(--text-secondary); }
+.date-card .allday {
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 6px 11px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.date-card .allday .icon { font-size: 12px; }
+
+.desc-card { align-items: flex-start; }
+.desc-card .desc-body { flex: 1; min-width: 0; }
+.desc-card .desc-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.desc-card .desc-text {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin: 22px 4px 10px;
+  font-weight: 500;
+}
+
+.details-list {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.details-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.details-row:last-child { border-bottom: none; }
+.details-row .row-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--card-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.details-row .row-body { flex: 1; min-width: 0; }
+.details-row .row-label { font-size: 14.5px; color: var(--text-primary); font-weight: 500; }
+.details-row .row-value { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+.details-row .row-arrow { font-size: 14px; color: var(--text-faint); }
+
+.timeline {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  padding: 18px 18px 14px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+.tl-row {
+  display: grid;
+  grid-template-columns: 56px 16px 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  position: relative;
+}
+.tl-time {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.tl-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  position: relative;
+  z-index: 2;
+  justify-self: center;
+}
+.tl-row::before {
+  content: '';
+  position: absolute;
+  left: 56px + 4px;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: var(--border-strong);
+  left: calc(56px + 7.25px);
+  z-index: 1;
+}
+.tl-row:first-child::before { top: 50%; }
+.tl-row:last-child::before { bottom: 50%; }
+.tl-label { font-size: 14px; color: var(--text-primary); }
+
+.detail-cta {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(22px + env(safe-area-inset-bottom));
+  background: var(--black);
+  color: #fff;
+  border-radius: 999px;
+  padding: 16px 28px;
+  font-size: 14.5px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow-fab);
+  z-index: 50;
+  white-space: nowrap;
+  transition: transform .15s;
+}
+.detail-cta:active { transform: translateX(-50%) scale(0.96); }
+
+/* ========== FORM VIEW ========== */
+.form-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0 18px;
+}
+.form-topbar .form-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 400;
+}
+.form-topbar .cancel-btn {
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 8px 4px;
+}
+
+.form-section { margin-bottom: 18px; }
+.form-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  background: var(--card);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-size: 15px;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-md);
+  outline: none;
+  font-family: var(--font-body);
+}
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text-faint); }
+.form-textarea { resize: none; min-height: 88px; line-height: 1.5; }
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.cat-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--card);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid transparent;
+  transition: all .15s;
+  text-align: left;
+  color: var(--text-primary);
+}
+.cat-chip .ic { font-size: 18px; color: var(--text-secondary); }
+.cat-chip.selected {
+  border-color: var(--black);
+  background: var(--card);
+}
+.cat-chip.selected .ic { color: var(--text-primary); }
+
+.schedule-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.schedule-item {
+  display: grid;
+  grid-template-columns: 90px 1fr 32px;
+  gap: 8px;
+  align-items: center;
+}
+.schedule-item input { padding: 10px 12px; font-size: 14px; }
+.schedule-item .remove-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--card-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+}
+.add-step-btn {
+  width: 100%;
+  padding: 11px;
+  border-radius: var(--radius-md);
+  background: var(--card-soft);
+  border: 1.5px dashed var(--border-strong);
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.save-btn {
+  width: 100%;
+  background: var(--black);
+  color: #fff;
+  border-radius: 999px;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 14px;
+}
+.save-btn:active { opacity: 0.85; }
+.save-btn:disabled { opacity: 0.45; }
+
+.delete-btn {
+  width: 100%;
+  background: transparent;
+  color: var(--red);
+  border-radius: 999px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-md);
+}
+.toggle-row .toggle-label { font-size: 14.5px; }
+.toggle {
+  width: 46px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--text-faint);
+  position: relative;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+.toggle.on { background: var(--black); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.toggle.on::after { transform: translateX(18px); }
+
+/* ========== STAR / FAVORITE ========== */
+.star-btn .icon { font-size: 19px; color: var(--text-tertiary); transition: color .2s; }
+.star-btn.active .icon { color: var(--gold); }
+.star-btn.active svg path { fill: var(--gold); stroke: var(--gold); }
+
+/* ========== SOON VIEW ========== */
+.soon-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  text-align: center;
+  padding: 40px 30px;
+}
+.soon-mark {
+  font-size: 48px;
+  color: var(--text-faint);
+  margin-bottom: 22px;
+}
+.soon-mark svg path { fill: currentColor; }
+.soon-kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+.soon-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+.soon-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  max-width: 280px;
+  line-height: 1.55;
+}
+
+/* ========== TOAST ========== */
+.toast {
+  position: fixed;
+  bottom: calc(110px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--black);
+  color: #fff;
+  padding: 11px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-fab);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+
+/* ========== SCROLLBARS / MISC ========== */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+@media (min-width: 520px) {
+  .fab, .detail-cta { left: 50%; }
+  .tabbar { max-width: 480px; left: 50%; transform: translateX(-50%); border-radius: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- SVG sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="ic-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M15 20c0-2.5 1.5-4.5 4-4.5s4 2 4 4.5"/>
+  </symbol>
+  <symbol id="ic-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/>
+  </symbol>
+  <symbol id="ic-coffee" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 10h12v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4v-6Z"/><path d="M17 12h2a2.5 2.5 0 0 1 0 5h-2"/><path d="M8 3c0 1 .8 1.5.8 2.5S8 7 8 8"/><path d="M12 3c0 1 .8 1.5.8 2.5S12 7 12 8"/>
+  </symbol>
+  <symbol id="ic-cake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 21h18"/><path d="M4 21v-7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7"/><path d="M4 16c2 0 2-1.5 4-1.5s2 1.5 4 1.5 2-1.5 4-1.5 2 1.5 4 1.5"/><path d="M12 8v4"/><circle cx="12" cy="6" r="1.2" fill="currentColor"/>
+  </symbol>
+  <symbol id="ic-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.75-.85.75-2.1.05-2.95s-1.95-.85-3.05-.05Z"/><path d="M12 15 9 12"/><path d="M16 14a8 8 0 0 0 5-7c0-1.5-.5-3-1.5-4.5C18 3.5 16.5 3 15 3a8 8 0 0 0-7 5"/><path d="M9 12a8 8 0 0 1 5-5"/><circle cx="14" cy="10" r="1.5"/>
+  </symbol>
+  <symbol id="ic-music" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7" cy="17" r="2.5"/><circle cx="17" cy="15" r="2.5"/><path d="M9.5 17V6l10-2v11"/>
+  </symbol>
+  <symbol id="ic-clipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 4h6v2H9z"/><path d="M9 12h6M9 16h4"/>
+  </symbol>
+  <symbol id="ic-alarm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="13" r="8"/><path d="m12 9 3 4h-3"/><path d="M5 4 3 6"/><path d="m19 4 2 2"/>
+  </symbol>
+  <symbol id="ic-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="m15 9-2 5-5 2 2-5z" fill="currentColor" fill-opacity="0.1"/>
+  </symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12 3 2.7 5.7 6.3.9-4.5 4.4 1 6.3-5.5-2.9-5.5 2.9 1-6.3-4.5-4.4 6.3-.9z"/>
+  </symbol>
+  <symbol id="ic-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 5h16l-6 8v6l-4-2v-4z"/>
+  </symbol>
+  <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M12 5v14M5 12h14"/>
+  </symbol>
+  <symbol id="ic-chev-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m14 6-6 6 6 6"/>
+  </symbol>
+  <symbol id="ic-chev-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m10 6 6 6-6 6"/>
+  </symbol>
+  <symbol id="ic-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12h14M13 5l7 7-7 7"/>
+  </symbol>
+  <symbol id="ic-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v5h1"/>
+  </symbol>
+  <symbol id="ic-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2M10 21v-4h4v4"/>
+  </symbol>
+  <symbol id="ic-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 11c0 6-7 11-7 11s-7-5-7-11a7 7 0 0 1 14 0Z"/><circle cx="12" cy="11" r="2.5"/>
+  </symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+  </symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+  </symbol>
+  <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/>
+  </symbol>
+  <symbol id="ic-sparkle" viewBox="0 0 24 24">
+    <path d="M12 2 13.5 9.5 21 11 13.5 12.5 12 20 10.5 12.5 3 11 10.5 9.5z" fill="currentColor"/>
+  </symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <path d="M6 6l12 12M18 6 6 18"/>
+  </symbol>
+  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 7h16M9 7V4h6v3M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/>
+  </symbol>
+</defs>
+</svg>
+
+<main id="app">
+
+  <!-- ========== HOME VIEW ========== -->
+  <section id="view-home" class="view active">
+    <div class="home-header">
+      <h1 class="headline" id="headlineText">Bugün<br>önemli bir gün.</h1>
+      <button class="filter-btn" id="filterBtn" aria-label="Filtre">
+        <span class="icon"><svg><use href="#ic-filter"/></svg></span>
+      </button>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="yaklasan" role="tab">Yaklaşan</button>
+      <button class="tab" data-tab="gecmis" role="tab">Geçmiş</button>
+      <button class="tab" data-tab="favoriler" role="tab">Favoriler<span class="count" id="favCount">0</span></button>
+    </div>
+
+    <div class="event-list" id="eventList"></div>
+  </section>
+
+  <!-- ========== DETAIL VIEW ========== -->
+  <section id="view-detail" class="view">
+    <div class="detail-topbar">
+      <button class="icon-btn-round" data-back aria-label="Geri">
+        <span class="icon"><svg><use href="#ic-chev-left"/></svg></span>
+      </button>
+      <span class="pill-tag" id="detailPill">
+        <span class="icon"><svg><use href="#ic-calendar"/></svg></span>
+        <span id="detailPillText">Etkinlik</span>
+      </span>
+      <button class="icon-btn-round star-btn" id="favToggle" aria-label="Favori">
+        <span class="icon"><svg><use href="#ic-star"/></svg></span>
+      </button>
+    </div>
+
+    <div class="detail-hero">
+      <div class="icon-square" id="detailIcon">
+        <span class="icon"><svg><use href="#ic-users"/></svg></span>
+      </div>
+      <div class="detail-kicker" id="detailKicker">ETKİNLİK</div>
+      <h2 class="detail-title" id="detailTitle"></h2>
+    </div>
+
+    <div class="date-card">
+      <div class="date-icon"><span class="icon"><svg><use href="#ic-calendar"/></svg></span></div>
+      <div class="day-num" id="detailDay">16</div>
+      <div class="day-info">
+        <div class="month" id="detailMonthYear">Mayıs 2026</div>
+        <div class="weekday" id="detailWeekday">Cuma</div>
+      </div>
+      <div class="allday" id="detailTime">
+        <span class="icon"><svg><use href="#ic-clock"/></svg></span>
+        <span id="detailTimeText">Tüm Gün</span>
+      </div>
+    </div>
+
+    <div class="desc-card" id="detailDescCard">
+      <div class="desc-icon"><span class="icon"><svg><use href="#ic-info"/></svg></span></div>
+      <div class="desc-body">
+        <div class="desc-label">Açıklama</div>
+        <div class="desc-text" id="detailDesc"></div>
+      </div>
+    </div>
+
+    <div class="section-label">DETAYLAR</div>
+    <div class="details-list" id="detailRows"></div>
+
+    <div class="section-label" id="planLabel">GÜN PLANI</div>
+    <div class="timeline" id="detailTimeline"></div>
+
+    <button class="detail-cta" id="addCalBtn">
+      <span class="icon"><svg><use href="#ic-calendar"/></svg></span>
+      Takvime Ekle
+    </button>
+  </section>
+
+  <!-- ========== FORM VIEW ========== -->
+  <section id="view-form" class="view">
+    <div class="form-topbar">
+      <button class="cancel-btn" data-back>Vazgeç</button>
+      <h2 class="form-title" id="formTitle">Yeni Etkinlik</h2>
+      <button class="cancel-btn" id="deleteFromForm" style="color:var(--red); display:none">Sil</button>
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Başlık</div>
+      <input class="form-input" id="fTitle" placeholder="Etkinlik adı" maxlength="80">
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Kategori</div>
+      <div class="cat-grid" id="catGrid"></div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Alt Tür</div>
+      <input class="form-input" id="fSubType" placeholder="Örn. Kutlama, Workshop, Teslim" maxlength="40">
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Tarih</div>
+      <input class="form-input" id="fDate" type="date">
+    </div>
+
+    <div class="form-section">
+      <div class="toggle-row" id="allDayRow">
+        <span class="toggle-label">Tüm Gün</span>
+        <div class="toggle on" id="allDayToggle"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Açıklama</div>
+      <textarea class="form-textarea" id="fDesc" placeholder="Etkinlik açıklaması (opsiyonel)" maxlength="240"></textarea>
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Kapsam</div>
+      <input class="form-input" id="fScope" placeholder="Örn. Tüm Ofis Etkinliği">
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Konum</div>
+      <input class="form-input" id="fLocation" placeholder="Örn. Ofis – Ana Salon">
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Katılımcılar</div>
+      <input class="form-input" id="fParticipants" placeholder="Örn. Tüm Çalışanlar">
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Gün Planı</div>
+      <div class="schedule-list" id="scheduleList"></div>
+      <button class="add-step-btn" id="addStepBtn">+ Adım Ekle</button>
+    </div>
+
+    <button class="save-btn" id="saveBtn">Kaydet</button>
+    <button class="delete-btn" id="deleteBtn" style="display:none">Bu Etkinliği Sil</button>
+  </section>
+
+  <!-- ========== SOON VIEW ========== -->
+  <section id="view-soon" class="view">
+    <div class="soon-wrap">
+      <div class="soon-mark"><span class="icon"><svg><use href="#ic-sparkle"/></svg></span></div>
+      <div class="soon-kicker" id="soonKicker">YAKINDA</div>
+      <h2 class="soon-title" id="soonTitle">Çok yakında.</h2>
+      <p class="soon-sub" id="soonSub">Bu bölüm sonraki sürümde geliyor. Şimdilik etkinliklerini ana sayfada yönetebilirsin.</p>
+    </div>
+  </section>
+
+</main>
+
+<button class="fab" id="newEventBtn">
+  <span class="icon"><svg><use href="#ic-plus"/></svg></span>
+  Yeni Etkinlik
+</button>
+
+<nav class="tabbar" role="tablist">
+  <button class="tabbar-item active" data-nav="home">
+    <span class="ic"><span class="icon"><svg><use href="#ic-sparkle"/></svg></span></span>
+    <span>Ana Sayfa</span>
+  </button>
+  <button class="tabbar-item" data-nav="takvim">
+    <span class="ic"><span class="icon"><svg><use href="#ic-calendar"/></svg></span></span>
+    <span>Takvim</span>
+  </button>
+  <button class="tabbar-item" data-nav="bildirimler">
+    <span class="ic"><span class="icon"><svg><use href="#ic-bell"/></svg></span></span>
+    <span>Bildirimler</span>
+  </button>
+  <button class="tabbar-item" data-nav="profilim">
+    <span class="ic"><span class="icon"><svg><use href="#ic-user"/></svg></span></span>
+    <span>Profilim</span>
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+/* ========== CONSTANTS ========== */
+const STORAGE_KEY = 'plannerApp.v1';
+
+const CATEGORIES = {
+  lansman:  { label: 'Lansman',  icon: 'ic-rocket' },
+  etkinlik: { label: 'Etkinlik', icon: 'ic-users' },
+  konser:   { label: 'Konser',   icon: 'ic-music' },
+  brief:    { label: 'Brief',    icon: 'ic-clipboard' },
+  deadline: { label: 'Deadline', icon: 'ic-alarm' },
+  toplanti: { label: 'Toplantı', icon: 'ic-calendar' },
+  kesif:    { label: 'Keşif',    icon: 'ic-compass' }
+};
+
+const MONTHS_TR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const WEEKDAYS_TR = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+
+/* ========== STATE ========== */
+let state = {
+  events: [],
+  tab: 'yaklasan',
+  currentEventId: null,
+  editingId: null,
+  formAllDay: true,
+  formCategory: 'etkinlik',
+  formSchedule: []
+};
+
+/* ========== STORAGE ========== */
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.events));
+  } catch (e) { console.warn('Storage failed:', e); }
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      state.events = JSON.parse(raw);
+      return true;
+    }
+  } catch (e) { console.warn('Load failed:', e); }
+  return false;
+}
+
+/* ========== DATE HELPERS ========== */
+function today() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+function plusDays(n) {
+  const d = today();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split('T')[0];
+}
+function daysUntil(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  const t = today();
+  return Math.round((d - t) / 86400000);
+}
+function fmtShort(iso) {
+  // "16 Mayıs · Cuma"
+  const d = new Date(iso + 'T00:00:00');
+  return `${d.getDate()} ${MONTHS_TR[d.getMonth()]} · ${WEEKDAYS_TR[d.getDay()]}`;
+}
+function fmtDay(iso) {
+  return new Date(iso + 'T00:00:00').getDate();
+}
+function fmtMonthYear(iso) {
+  const d = new Date(iso + 'T00:00:00');
+  return `${MONTHS_TR[d.getMonth()]} ${d.getFullYear()}`;
+}
+function fmtWeekday(iso) {
+  return WEEKDAYS_TR[new Date(iso + 'T00:00:00').getDay()];
+}
+function daysPill(n) {
+  if (n === 0) return 'BUGÜN';
+  if (n === 1) return 'YARIN';
+  if (n < 0) return `${Math.abs(n)} GÜN ÖNCE`;
+  return `${n} GÜN`;
+}
+
+/* ========== SEED DATA ========== */
+function seed() {
+  state.events = [
+    {
+      id: 'e1', title: 'Çalışanlar Günü', date: plusDays(4),
+      category: 'etkinlik', subType: 'Kutlama', allDay: true,
+      description: 'Çalışanlarımızın emeğini ve katkısını kutladığımız bu özel günde tüm ekip bir araya geliyor.',
+      scope: 'Tüm Ofis Etkinliği', location: 'Ofis – Ana Salon', participants: 'Tüm Çalışanlar',
+      schedule: [
+        { time: '10:30', label: 'Açılış Konuşması' },
+        { time: '11:00', label: 'Etkinlik & Aktiviteler' },
+        { time: '13:00', label: 'Öğle Yemeği' },
+        { time: '14:30', label: 'Ödül Töreni & Kapanış' }
+      ],
+      favorite: false
+    },
+    {
+      id: 'e2', title: 'Müşteri Brief – Yeni Marka', date: plusDays(6),
+      category: 'brief', subType: 'İlk Brief', allDay: false,
+      description: 'Yeni marka için ilk brief toplantısı, hedef kitle ve kampanya yönü konuşulacak.',
+      scope: 'Strateji + Kreatif', location: 'Toplantı Odası – 2. Kat', participants: 'Strateji Ekibi',
+      schedule: [
+        { time: '14:00', label: 'Müşteri Sunumu' },
+        { time: '15:00', label: 'Brief Tartışması' }
+      ],
+      favorite: false
+    },
+    {
+      id: 'e3', title: 'Kampanya Deadline', date: plusDays(8),
+      category: 'deadline', subType: 'Teslim', allDay: true,
+      description: 'Bahar kampanyası teslim günü. Tüm görsel ve metin onaylanmış olmalı.',
+      scope: 'Kreatif + Prodüksiyon', location: 'Tüm Ekip', participants: 'Kreatif Ekip',
+      schedule: [],
+      favorite: false
+    },
+    {
+      id: 'e4', title: 'Q2 Değerlendirme Toplantısı', date: plusDays(10),
+      category: 'toplanti', subType: 'Çeyrek Sonu', allDay: false,
+      description: 'İkinci çeyrek performans değerlendirmesi ve sonraki dönem hedefleri.',
+      scope: 'Yönetim', location: 'Ofis', participants: 'Departman Liderleri',
+      schedule: [
+        { time: '10:00', label: 'Açılış & Veriler' },
+        { time: '11:30', label: 'Departman Sunumları' }
+      ],
+      favorite: false
+    },
+    {
+      id: 'e5', title: 'Lansman Hazırlık Toplantısı', date: plusDays(13),
+      category: 'toplanti', subType: 'Planlama', allDay: false,
+      description: 'Q3 ürün lansmanı için son hazırlık ve görev dağılımı.',
+      scope: 'Tüm Departmanlar', location: 'Ana Salon', participants: 'Proje Ekibi',
+      schedule: [
+        { time: '09:30', label: 'Plan İncelemesi' },
+        { time: '11:00', label: 'Görev Dağılımı' }
+      ],
+      favorite: false
+    },
+    {
+      id: 'e6', title: 'Brand Discovery Workshop', date: plusDays(16),
+      category: 'kesif', subType: 'Workshop', allDay: false,
+      description: 'Yeni marka kimliği için keşif çalışması ve workshop.',
+      scope: 'Strateji + Kreatif', location: 'Workshop Odası', participants: 'Kreatif Ekip + Müşteri',
+      schedule: [
+        { time: '10:00', label: 'Brand Audit' },
+        { time: '13:00', label: 'Öğle Arası' },
+        { time: '14:00', label: 'İdeasyon' }
+      ],
+      favorite: false
+    },
+    {
+      id: 'e7', title: 'Kahve & Networking', date: plusDays(18),
+      category: 'etkinlik', subType: 'Sosyal', allDay: false,
+      description: 'Yeni ekip üyeleriyle tanışma ve gayri resmi sohbet.',
+      scope: 'Tüm Ekip', location: 'Lobi', participants: 'Tüm Çalışanlar',
+      schedule: [{ time: '16:00', label: 'Açılış' }],
+      favorite: false
+    },
+    {
+      id: 'e8', title: 'Ece Yılmaz Doğum Günü', date: plusDays(22),
+      category: 'etkinlik', subType: 'Doğum Günü', allDay: true,
+      description: 'Ekip arkadaşımız Ece için sürpriz kutlama.',
+      scope: 'Ofis', location: 'Mutfak', participants: 'Tüm Çalışanlar',
+      schedule: [{ time: '15:00', label: 'Pasta & Kutlama' }],
+      favorite: false
+    },
+    {
+      id: 'e9', title: 'Konser – Yeni Müzik Şubesi', date: plusDays(25),
+      category: 'konser', subType: 'Lansman', allDay: false,
+      description: 'Yeni müzik departmanı lansmanı için konser etkinliği.',
+      scope: 'Halka Açık', location: 'Salon X – Karaköy', participants: 'Davetli Misafirler',
+      schedule: [
+        { time: '20:00', label: 'Kapı Açılış' },
+        { time: '21:00', label: 'Konser Başlangıç' }
+      ],
+      favorite: false
+    },
+    {
+      id: 'e10', title: 'Q3 Strateji Lansmanı', date: plusDays(34),
+      category: 'lansman', subType: 'Yeni Çeyrek', allDay: true,
+      description: 'Üçüncü çeyrek strateji ve yeni kampanya hattının duyurusu.',
+      scope: 'Tüm Ekip + Müşteriler', location: 'Etkinlik Alanı', participants: 'Tüm Çalışanlar',
+      schedule: [
+        { time: '11:00', label: 'Lansman Konuşması' },
+        { time: '12:30', label: 'Kokteyl' }
+      ],
+      favorite: true
+    },
+    {
+      id: 'past1', title: 'Q1 Raporu Sunumu', date: plusDays(-4),
+      category: 'toplanti', subType: 'Sunum', allDay: false,
+      description: 'Geçen çeyrek sonuçları sunuldu.',
+      scope: 'Yönetim', location: 'Toplantı Odası', participants: 'Liderler',
+      schedule: [{ time: '10:00', label: 'Sunum' }],
+      favorite: false
+    }
+  ];
+  save();
+}
+
+/* ========== RENDER: HOME ========== */
+function renderHome() {
+  const events = state.events.slice();
+  const tNow = today().getTime();
+
+  const upcoming = events.filter(e => new Date(e.date + 'T00:00:00').getTime() >= tNow).sort((a, b) => a.date.localeCompare(b.date));
+  const past = events.filter(e => new Date(e.date + 'T00:00:00').getTime() < tNow).sort((a, b) => b.date.localeCompare(a.date));
+  const favs = events.filter(e => e.favorite).sort((a, b) => a.date.localeCompare(b.date));
+
+  // Stats
+  const totalParts = [
+    `${events.length} GÜN`,
+    `${upcoming.length} YAKLAŞAN`,
+    `${past.length} GEÇMİŞ`
+  ];
+  document.getElementById('stats').innerHTML = totalParts.map((p, i) => i === 0 ? p : `<span class="sep">·</span>${p}`).join('');
+  document.getElementById('favCount').textContent = favs.length;
+
+  // Headline
+  const hl = document.getElementById('headlineText');
+  if (upcoming.length === 0) {
+    hl.innerHTML = 'Henüz<br>etkinlik yok.';
+  } else {
+    const next = upcoming[0];
+    const d = daysUntil(next.date);
+    if (d === 0) hl.innerHTML = 'Bugün<br>önemli bir gün.';
+    else if (d === 1) hl.innerHTML = 'Yarın<br>bir etkinlik var.';
+    else hl.innerHTML = 'Bugün<br>önemli bir gün.';
+  }
+
+  let list;
+  if (state.tab === 'yaklasan') list = upcoming;
+  else if (state.tab === 'gecmis') list = past;
+  else list = favs;
+
+  const container = document.getElementById('eventList');
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="sparkle-mark"><span class="icon"><svg><use href="#ic-sparkle"/></svg></span></div>
+        <p>Henüz bir şey yok.</p>
+        <small>${state.tab === 'gecmis' ? 'GEÇMİŞ GÖZÜKMEYECEK' : state.tab === 'favoriler' ? 'FAVORİ EKLEYİNCE GÖRÜNECEK' : 'YENİ ETKİNLİK EKLE'}</small>
+      </div>`;
+    return;
+  }
+
+  let html = '';
+  list.forEach((e, idx) => {
+    const cat = CATEGORIES[e.category] || CATEGORIES.etkinlik;
+    const d = daysUntil(e.date);
+    const isFirst = idx === 0 && state.tab === 'yaklasan';
+
+    if (isFirst) {
+      const subType = e.subType || cat.label;
+      html += `
+        <div class="hero-card" data-id="${e.id}">
+          <div class="hero-label">SIRADAKİ</div>
+          <h3 class="hero-title">${escapeHtml(e.title)}</h3>
+          <div class="hero-meta">${fmtShort(e.date)}</div>
+          <div class="hero-divider"></div>
+          <div class="hero-row">
+            <div class="icon-square"><span class="icon"><svg><use href="#${cat.icon}"/></svg></span></div>
+            <div class="summary">
+              <div class="summary-main">${escapeHtml(e.scope || cat.label)}</div>
+              <div class="summary-sub">${cat.label} · ${escapeHtml(subType)}</div>
+            </div>
+            <div class="arrow-btn"><span class="icon"><svg><use href="#ic-arrow-right"/></svg></span></div>
+          </div>
+        </div>`;
+    } else {
+      html += `
+        <div class="event-card" data-id="${e.id}">
+          <div class="icon-square"><span class="icon"><svg><use href="#${cat.icon}"/></svg></span></div>
+          <div class="body">
+            <div class="title">${escapeHtml(e.title)}</div>
+            <div class="date">${fmtShort(e.date)}</div>
+            <div class="cat">${cat.label} · ${escapeHtml(e.scope || '—')}</div>
+          </div>
+          <div class="right">
+            <div class="days-pill">${daysPill(d)}</div>
+            <div class="arrow"><span class="icon"><svg><use href="#ic-chev-right"/></svg></span></div>
+          </div>
+        </div>`;
+    }
+  });
+  container.innerHTML = html;
+
+  container.querySelectorAll('[data-id]').forEach(el => {
+    el.addEventListener('click', () => openDetail(el.dataset.id));
+  });
+}
+
+function truncate(s, n) {
+  if (!s) return '';
+  return s.length > n ? s.slice(0, n).trim() + '…' : s;
+}
+function escapeHtml(s) {
+  if (!s) return '';
+  return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* ========== RENDER: DETAIL ========== */
+function openDetail(id) {
+  const e = state.events.find(x => x.id === id);
+  if (!e) return;
+  state.currentEventId = id;
+
+  const cat = CATEGORIES[e.category] || CATEGORIES.etkinlik;
+
+  document.getElementById('detailPillText').textContent = cat.label;
+  document.getElementById('detailKicker').textContent = cat.label.toUpperCase();
+  document.getElementById('detailTitle').textContent = e.title;
+  document.getElementById('detailDay').textContent = fmtDay(e.date);
+  document.getElementById('detailMonthYear').textContent = fmtMonthYear(e.date);
+  document.getElementById('detailWeekday').textContent = fmtWeekday(e.date);
+  document.getElementById('detailTimeText').textContent = e.allDay ? 'Tüm Gün' : (e.schedule && e.schedule.length ? e.schedule[0].time + ' başlangıç' : 'Saat belirtilmedi');
+
+  document.getElementById('detailIcon').innerHTML = `<span class="icon"><svg><use href="#${cat.icon}"/></svg></span>`;
+
+  const descCard = document.getElementById('detailDescCard');
+  if (e.description && e.description.trim()) {
+    descCard.style.display = 'flex';
+    document.getElementById('detailDesc').textContent = e.description;
+  } else {
+    descCard.style.display = 'none';
+  }
+
+  // Details rows
+  const rows = [
+    { icon: 'ic-calendar', label: 'Etkinlik Türü', value: e.subType || cat.label, action: 'edit' },
+    { icon: 'ic-building', label: 'Kapsam', value: e.scope || '—', action: 'edit' },
+    { icon: 'ic-pin', label: 'Konum', value: e.location || '—', action: 'edit' },
+    { icon: 'ic-users', label: 'Katılımcılar', value: e.participants || '—', action: 'edit' }
+  ];
+  document.getElementById('detailRows').innerHTML = rows.map(r => `
+    <button class="details-row" data-action="${r.action}" style="width:100%;text-align:left">
+      <div class="row-icon"><span class="icon"><svg><use href="#${r.icon}"/></svg></span></div>
+      <div class="row-body">
+        <div class="row-label">${escapeHtml(r.label)}</div>
+        <div class="row-value">${escapeHtml(r.value)}</div>
+      </div>
+      <div class="row-arrow"><span class="icon"><svg><use href="#ic-chev-right"/></svg></span></div>
+    </button>
+  `).join('');
+
+  document.querySelectorAll('#detailRows [data-action="edit"]').forEach(el => {
+    el.addEventListener('click', () => openForm(state.currentEventId));
+  });
+
+  // Timeline
+  const tl = document.getElementById('detailTimeline');
+  const planLabel = document.getElementById('planLabel');
+  if (e.schedule && e.schedule.length) {
+    planLabel.style.display = '';
+    tl.style.display = '';
+    tl.innerHTML = e.schedule.map(s => `
+      <div class="tl-row">
+        <div class="tl-time">${escapeHtml(s.time)}</div>
+        <div class="tl-dot"></div>
+        <div class="tl-label">${escapeHtml(s.label)}</div>
+      </div>
+    `).join('');
+  } else {
+    planLabel.style.display = 'none';
+    tl.style.display = 'none';
+  }
+
+  // Favorite button state
+  const favBtn = document.getElementById('favToggle');
+  favBtn.classList.toggle('active', !!e.favorite);
+
+  showView('detail');
+}
+
+/* ========== RENDER: FORM ========== */
+function openForm(id) {
+  state.editingId = id || null;
+  document.getElementById('formTitle').textContent = id ? 'Etkinliği Düzenle' : 'Yeni Etkinlik';
+  document.getElementById('deleteBtn').style.display = id ? '' : 'none';
+  document.getElementById('deleteFromForm').style.display = id ? '' : 'none';
+
+  const e = id ? state.events.find(x => x.id === id) : null;
+  document.getElementById('fTitle').value = e ? e.title : '';
+  document.getElementById('fSubType').value = e ? (e.subType || '') : '';
+  document.getElementById('fDate').value = e ? e.date : plusDays(1);
+  document.getElementById('fDesc').value = e ? (e.description || '') : '';
+  document.getElementById('fScope').value = e ? (e.scope || '') : '';
+  document.getElementById('fLocation').value = e ? (e.location || '') : '';
+  document.getElementById('fParticipants').value = e ? (e.participants || '') : '';
+
+  state.formCategory = e ? e.category : 'etkinlik';
+  state.formAllDay = e ? !!e.allDay : true;
+  state.formSchedule = e && e.schedule ? e.schedule.slice() : [];
+
+  renderCatGrid();
+  renderScheduleList();
+  document.getElementById('allDayToggle').classList.toggle('on', state.formAllDay);
+
+  showView('form');
+}
+
+function renderCatGrid() {
+  document.getElementById('catGrid').innerHTML = Object.entries(CATEGORIES).map(([key, c]) => `
+    <button class="cat-chip ${state.formCategory === key ? 'selected' : ''}" data-cat="${key}" type="button">
+      <span class="ic"><span class="icon"><svg><use href="#${c.icon}"/></svg></span></span>
+      <span>${c.label}</span>
+    </button>
+  `).join('');
+  document.querySelectorAll('#catGrid [data-cat]').forEach(el => {
+    el.addEventListener('click', () => {
+      state.formCategory = el.dataset.cat;
+      renderCatGrid();
+    });
+  });
+}
+
+function renderScheduleList() {
+  const list = document.getElementById('scheduleList');
+  list.innerHTML = state.formSchedule.map((s, i) => `
+    <div class="schedule-item">
+      <input class="form-input" type="time" value="${escapeHtml(s.time)}" data-idx="${i}" data-field="time">
+      <input class="form-input" type="text" value="${escapeHtml(s.label)}" data-idx="${i}" data-field="label" placeholder="Adım açıklaması">
+      <button class="remove-btn" data-remove="${i}" type="button">
+        <span class="icon" style="font-size:14px"><svg><use href="#ic-x"/></svg></span>
+      </button>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('input[data-idx]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const i = parseInt(inp.dataset.idx, 10);
+      state.formSchedule[i][inp.dataset.field] = inp.value;
+    });
+  });
+  list.querySelectorAll('[data-remove]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = parseInt(btn.dataset.remove, 10);
+      state.formSchedule.splice(i, 1);
+      renderScheduleList();
+    });
+  });
+}
+
+/* ========== RENDER: SOON ========== */
+function showSoon(which) {
+  const map = {
+    takvim:      { kicker: 'TAKVİM', title: 'Çok yakında.', sub: 'Tüm etkinliklerin tek bir takvim ekranında görünür olacak. Şu an için ana sayfada listelenmiş halini kullanabilirsin.' },
+    bildirimler: { kicker: 'BİLDİRİMLER', title: 'Sessiz kalmayız.', sub: 'Yaklaşan etkinlikler için akıllı bildirimler yakında. Önceden uyarı, hatırlatma sıklığı ve özelleştirme ekleyeceğiz.' },
+    profilim:    { kicker: 'PROFİL', title: 'Sen, daha sonra.', sub: 'Profil ve tercih ayarları sonraki sürümde. Şimdilik tek kullanıcı ve cihaz, tüm veri yerel.' }
+  };
+  const m = map[which] || map.takvim;
+  document.getElementById('soonKicker').textContent = m.kicker;
+  document.getElementById('soonTitle').textContent = m.title;
+  document.getElementById('soonSub').textContent = m.sub;
+  showView('soon');
+}
+
+/* ========== VIEW SWITCHING ========== */
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+
+  // FAB only on home
+  document.getElementById('newEventBtn').style.display = name === 'home' ? '' : 'none';
+
+  // Detail CTA only on detail
+  const cta = document.getElementById('addCalBtn');
+  if (cta) cta.style.display = name === 'detail' ? '' : 'none';
+
+  // Update tabbar active state
+  document.querySelectorAll('.tabbar-item').forEach(t => {
+    const isActive =
+      (name === 'home'        && t.dataset.nav === 'home') ||
+      (name === 'soon'        && t.dataset.nav === state.currentSoon) ||
+      (name === 'detail'      && t.dataset.nav === 'home') ||
+      (name === 'form'        && t.dataset.nav === 'home');
+    t.classList.toggle('active', isActive);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+/* ========== EVENT ACTIONS ========== */
+function toggleFav(id) {
+  const e = state.events.find(x => x.id === id);
+  if (!e) return;
+  e.favorite = !e.favorite;
+  save();
+  document.getElementById('favToggle').classList.toggle('active', e.favorite);
+  toast(e.favorite ? 'Favorilere eklendi' : 'Favorilerden çıkarıldı');
+}
+
+function saveForm() {
+  const title = document.getElementById('fTitle').value.trim();
+  if (!title) {
+    toast('Başlık gerekli');
+    return;
+  }
+  const date = document.getElementById('fDate').value;
+  if (!date) {
+    toast('Tarih gerekli');
+    return;
+  }
+  const payload = {
+    title,
+    date,
+    category: state.formCategory,
+    subType: document.getElementById('fSubType').value.trim(),
+    allDay: state.formAllDay,
+    description: document.getElementById('fDesc').value.trim(),
+    scope: document.getElementById('fScope').value.trim(),
+    location: document.getElementById('fLocation').value.trim(),
+    participants: document.getElementById('fParticipants').value.trim(),
+    schedule: state.formSchedule.filter(s => s.time && s.label),
+    favorite: false
+  };
+  if (state.editingId) {
+    const idx = state.events.findIndex(x => x.id === state.editingId);
+    if (idx >= 0) {
+      payload.favorite = state.events[idx].favorite;
+      state.events[idx] = { ...state.events[idx], ...payload };
+    }
+    toast('Güncellendi');
+  } else {
+    payload.id = 'e_' + Date.now().toString(36);
+    state.events.push(payload);
+    toast('Eklendi');
+  }
+  save();
+  state.editingId = null;
+  renderHome();
+  showView('home');
+}
+
+function deleteEvent() {
+  if (!state.editingId) return;
+  if (!confirm('Bu etkinliği silmek istediğine emin misin?')) return;
+  state.events = state.events.filter(e => e.id !== state.editingId);
+  save();
+  state.editingId = null;
+  state.currentEventId = null;
+  renderHome();
+  showView('home');
+  toast('Silindi');
+}
+
+/* ========== ICS EXPORT (Takvime Ekle) ========== */
+function downloadIcs(e) {
+  const dtStart = e.date.replace(/-/g, '');
+  const d = new Date(e.date + 'T00:00:00');
+  const dEnd = new Date(d);
+  dEnd.setDate(dEnd.getDate() + 1);
+  const dtEnd = dEnd.toISOString().split('T')[0].replace(/-/g, '');
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Planner//TR',
+    'BEGIN:VEVENT',
+    'UID:' + e.id + '@planner',
+    'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z',
+    'DTSTART;VALUE=DATE:' + dtStart,
+    'DTEND;VALUE=DATE:' + dtEnd,
+    'SUMMARY:' + e.title,
+    e.description ? 'DESCRIPTION:' + e.description.replace(/\n/g, '\\n') : '',
+    e.location ? 'LOCATION:' + e.location : '',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].filter(Boolean).join('\r\n');
+  const blob = new Blob([ics], { type: 'text/calendar' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = e.title.replace(/[^\w]+/g, '_') + '.ics';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+  toast('Takvim dosyası indirildi');
+}
+
+/* ========== TOAST ========== */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/* ========== EVENT WIRING ========== */
+function wire() {
+  // Tabs
+  document.querySelectorAll('.tab[data-tab]').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      state.tab = t.dataset.tab;
+      renderHome();
+    });
+  });
+
+  // FAB
+  document.getElementById('newEventBtn').addEventListener('click', () => openForm(null));
+
+  // Back buttons
+  document.querySelectorAll('[data-back]').forEach(b => {
+    b.addEventListener('click', () => {
+      if (document.getElementById('view-form').classList.contains('active')) {
+        if (state.editingId) openDetail(state.editingId);
+        else showView('home');
+      } else {
+        showView('home');
+      }
+    });
+  });
+
+  // Detail favorite
+  document.getElementById('favToggle').addEventListener('click', () => {
+    if (state.currentEventId) toggleFav(state.currentEventId);
+  });
+
+  // Detail CTA
+  document.getElementById('addCalBtn').addEventListener('click', () => {
+    const e = state.events.find(x => x.id === state.currentEventId);
+    if (e) downloadIcs(e);
+  });
+
+  // Form: all day
+  document.getElementById('allDayRow').addEventListener('click', () => {
+    state.formAllDay = !state.formAllDay;
+    document.getElementById('allDayToggle').classList.toggle('on', state.formAllDay);
+  });
+
+  // Form: save / delete
+  document.getElementById('saveBtn').addEventListener('click', saveForm);
+  document.getElementById('deleteBtn').addEventListener('click', deleteEvent);
+  document.getElementById('deleteFromForm').addEventListener('click', deleteEvent);
+
+  // Add step
+  document.getElementById('addStepBtn').addEventListener('click', () => {
+    state.formSchedule.push({ time: '', label: '' });
+    renderScheduleList();
+  });
+
+  // Bottom nav
+  document.querySelectorAll('.tabbar-item').forEach(t => {
+    t.addEventListener('click', () => {
+      const nav = t.dataset.nav;
+      if (nav === 'home') {
+        showView('home');
+      } else {
+        state.currentSoon = nav;
+        showSoon(nav);
+      }
+    });
+  });
+
+  // Filter button — for v1, just toast
+  document.getElementById('filterBtn').addEventListener('click', () => {
+    toast('Filtre özelliği yakında');
+  });
+
+  // Detail title also opens form
+  document.getElementById('detailTitle').addEventListener('click', () => {
+    if (state.currentEventId) openForm(state.currentEventId);
+  });
+}
+
+/* ========== INIT ========== */
+function init() {
+  if (!load() || state.events.length === 0) seed();
+  wire();
+  renderHome();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+/* ========== SERVICE WORKER ========== */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
