@@ -16,7 +16,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -39,7 +39,7 @@
   --radius-md: 16px;
   --radius-lg: 20px;
   --radius-xl: 28px;
-  --font-display: 'Fraunces', 'Times New Roman', serif;
+  --font-display: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
@@ -107,11 +107,10 @@ input, textarea, select {
 
 .headline {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 38px;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
   max-width: 78%;
 }
@@ -195,8 +194,8 @@ input, textarea, select {
 .empty-state .sparkle-mark { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
 .empty-state p {
   font-family: var(--font-display);
-  font-style: italic;
-  font-size: 22px;
+  font-weight: 500;
+  font-size: 18px;
   color: var(--text-secondary);
   margin-bottom: 6px;
 }
@@ -207,6 +206,57 @@ input, textarea, select {
   text-transform: uppercase;
   color: var(--text-faint);
 }
+
+/* Favorited cards: soft mint background */
+.event-card.fav, .hero-card.fav {
+  background: #DCEEDC;
+}
+.event-card.fav .icon-square,
+.event-card.fav .days-pill,
+.hero-card.fav .icon-square,
+.hero-card.fav .arrow-btn {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/* Hero card description */
+.hero-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin: 12px 0 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Event card description */
+.event-card .desc-line {
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Detail page edit button (red, bottom of content) */
+.detail-edit-btn {
+  width: 100%;
+  background: transparent;
+  color: var(--red);
+  padding: 16px;
+  font-size: 14.5px;
+  font-weight: 500;
+  text-align: center;
+  margin: 32px 0 80px;
+  border-radius: 12px;
+  letter-spacing: 0.01em;
+  transition: opacity .15s;
+}
+.detail-edit-btn:active { opacity: 0.55; }
 
 /* Hero card (SIRADAKI) */
 .hero-card {
@@ -232,11 +282,10 @@ input, textarea, select {
 
 .hero-title {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 30px;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   margin-bottom: 6px;
   color: var(--text-primary);
 }
@@ -331,10 +380,9 @@ input, textarea, select {
 .event-card .body { flex: 1; min-width: 0; }
 .event-card .title {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 19px;
-  line-height: 1.2;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.25;
   margin-bottom: 4px;
   color: var(--text-primary);
 }
@@ -480,11 +528,10 @@ input, textarea, select {
 }
 .detail-title {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 38px;
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
 }
 
@@ -511,8 +558,8 @@ input, textarea, select {
 }
 .date-card .day-num {
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 34px;
+  font-weight: 600;
+  font-size: 30px;
   line-height: 1;
   letter-spacing: -0.02em;
 }
@@ -531,6 +578,39 @@ input, textarea, select {
   flex-shrink: 0;
 }
 .date-card .allday .icon { font-size: 12px; }
+
+/* Multi-day range layout */
+.date-card.is-range { align-items: center; }
+.date-card.is-range .range-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.day-range {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: 26px;
+  line-height: 1;
+}
+.day-range .rng-arrow {
+  font-size: 15px;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  font-family: var(--font-body);
+}
+.date-card.is-range .month { font-size: 13.5px; color: var(--text-primary); font-weight: 500; }
+.date-card.is-range .weekday-range {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+}
 
 .desc-card { align-items: flex-start; }
 .desc-card .desc-body { flex: 1; min-width: 0; }
@@ -661,9 +741,8 @@ input, textarea, select {
 }
 .form-topbar .form-title {
   font-family: var(--font-display);
-  font-style: italic;
-  font-size: 22px;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: 600;
 }
 .form-topbar .cancel-btn {
   font-size: 14px;
@@ -843,11 +922,10 @@ input, textarea, select {
 }
 .soon-title {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 38px;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
   margin-bottom: 14px;
 }
@@ -1013,18 +1091,7 @@ input, textarea, select {
       <h2 class="detail-title" id="detailTitle"></h2>
     </div>
 
-    <div class="date-card">
-      <div class="date-icon"><span class="icon"><svg><use href="#ic-calendar"/></svg></span></div>
-      <div class="day-num" id="detailDay">16</div>
-      <div class="day-info">
-        <div class="month" id="detailMonthYear">Mayıs 2026</div>
-        <div class="weekday" id="detailWeekday">Cuma</div>
-      </div>
-      <div class="allday" id="detailTime">
-        <span class="icon"><svg><use href="#ic-clock"/></svg></span>
-        <span id="detailTimeText">Tüm Gün</span>
-      </div>
-    </div>
+    <div class="date-card" id="dateCard"></div>
 
     <div class="desc-card" id="detailDescCard">
       <div class="desc-icon"><span class="icon"><svg><use href="#ic-info"/></svg></span></div>
@@ -1039,6 +1106,8 @@ input, textarea, select {
 
     <div class="section-label" id="planLabel">GÜN PLANI</div>
     <div class="timeline" id="detailTimeline"></div>
+
+    <button class="detail-edit-btn" id="detailEditBtn">Etkinliği Düzenle</button>
 
     <button class="detail-cta" id="addCalBtn">
       <span class="icon"><svg><use href="#ic-calendar"/></svg></span>
@@ -1070,8 +1139,13 @@ input, textarea, select {
     </div>
 
     <div class="form-section">
-      <div class="form-label">Tarih</div>
+      <div class="form-label">Başlangıç Tarihi</div>
       <input class="form-input" id="fDate" type="date">
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Bitiş Tarihi <span style="color:var(--text-faint); font-weight:400; text-transform:none; letter-spacing:0">— aynı gün ise boş bırak</span></div>
+      <input class="form-input" id="fEndDate" type="date">
     </div>
 
     <div class="form-section">
@@ -1167,6 +1241,7 @@ const CATEGORIES = {
 
 const MONTHS_TR = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 const WEEKDAYS_TR = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+const WEEKDAYS_SHORT_TR = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
 
 /* ========== STATE ========== */
 let state = {
@@ -1218,6 +1293,39 @@ function fmtShort(iso) {
   const d = new Date(iso + 'T00:00:00');
   return `${d.getDate()} ${MONTHS_TR[d.getMonth()]} · ${WEEKDAYS_TR[d.getDay()]}`;
 }
+function fmtRange(startIso, endIso) {
+  // "16–21 Mayıs" or "30 Mayıs – 2 Haziran"
+  const s = new Date(startIso + 'T00:00:00');
+  const e = new Date(endIso + 'T00:00:00');
+  const sameMonth = s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear();
+  if (sameMonth) return `${s.getDate()}–${e.getDate()} ${MONTHS_TR[s.getMonth()]}`;
+  return `${s.getDate()} ${MONTHS_TR[s.getMonth()]} – ${e.getDate()} ${MONTHS_TR[e.getMonth()]}`;
+}
+function fmtWeekdayRange(startIso, endIso) {
+  const s = new Date(startIso + 'T00:00:00');
+  const e = new Date(endIso + 'T00:00:00');
+  return `${WEEKDAYS_SHORT_TR[s.getDay()]} → ${WEEKDAYS_SHORT_TR[e.getDay()]}`;
+}
+function isMultiDay(e) {
+  return !!(e.endDate && e.endDate !== e.date);
+}
+function eventEndDate(e) {
+  return e.endDate || e.date;
+}
+function isPast(e) {
+  return new Date(eventEndDate(e) + 'T00:00:00').getTime() < today().getTime();
+}
+function isOngoing(e) {
+  const start = new Date(e.date + 'T00:00:00').getTime();
+  const end = new Date(eventEndDate(e) + 'T00:00:00').getTime();
+  const t = today().getTime();
+  return start <= t && end >= t;
+}
+function daysSpan(startIso, endIso) {
+  const s = new Date(startIso + 'T00:00:00');
+  const e = new Date(endIso + 'T00:00:00');
+  return Math.round((e - s) / 86400000) + 1; // inclusive
+}
 function fmtDay(iso) {
   return new Date(iso + 'T00:00:00').getDate();
 }
@@ -1228,11 +1336,21 @@ function fmtMonthYear(iso) {
 function fmtWeekday(iso) {
   return WEEKDAYS_TR[new Date(iso + 'T00:00:00').getDay()];
 }
-function daysPill(n) {
-  if (n === 0) return 'BUGÜN';
-  if (n === 1) return 'YARIN';
-  if (n < 0) return `${Math.abs(n)} GÜN ÖNCE`;
-  return `${n} GÜN`;
+function eventDateLabel(e) {
+  return isMultiDay(e) ? fmtRange(e.date, e.endDate) : fmtShort(e.date);
+}
+function daysPill(e) {
+  const startD = daysUntil(e.date);
+  const endD = daysUntil(eventEndDate(e));
+  if (isMultiDay(e)) {
+    if (startD > 0) return `${startD} GÜN`;
+    if (endD >= 0) return 'DEVAM EDİYOR';
+    return `${Math.abs(endD)} GÜN ÖNCE`;
+  }
+  if (startD === 0) return 'BUGÜN';
+  if (startD === 1) return 'YARIN';
+  if (startD < 0) return `${Math.abs(startD)} GÜN ÖNCE`;
+  return `${startD} GÜN`;
 }
 
 /* ========== SEED DATA ========== */
@@ -1357,10 +1475,9 @@ function seed() {
 /* ========== RENDER: HOME ========== */
 function renderHome() {
   const events = state.events.slice();
-  const tNow = today().getTime();
 
-  const upcoming = events.filter(e => new Date(e.date + 'T00:00:00').getTime() >= tNow).sort((a, b) => a.date.localeCompare(b.date));
-  const past = events.filter(e => new Date(e.date + 'T00:00:00').getTime() < tNow).sort((a, b) => b.date.localeCompare(a.date));
+  const upcoming = events.filter(e => !isPast(e)).sort((a, b) => a.date.localeCompare(b.date));
+  const past = events.filter(e => isPast(e)).sort((a, b) => b.date.localeCompare(a.date));
   const favs = events.filter(e => e.favorite).sort((a, b) => a.date.localeCompare(b.date));
 
   // Stats
@@ -1378,10 +1495,13 @@ function renderHome() {
     hl.innerHTML = 'Henüz<br>etkinlik yok.';
   } else {
     const next = upcoming[0];
-    const d = daysUntil(next.date);
-    if (d === 0) hl.innerHTML = 'Bugün<br>önemli bir gün.';
-    else if (d === 1) hl.innerHTML = 'Yarın<br>bir etkinlik var.';
-    else hl.innerHTML = 'Bugün<br>önemli bir gün.';
+    if (isOngoing(next)) hl.innerHTML = 'Şu an<br>devam ediyor.';
+    else {
+      const d = daysUntil(next.date);
+      if (d === 0) hl.innerHTML = 'Bugün<br>önemli bir gün.';
+      else if (d === 1) hl.innerHTML = 'Yarın<br>bir etkinlik var.';
+      else hl.innerHTML = 'Bugün<br>önemli bir gün.';
+    }
   }
 
   let list;
@@ -1403,16 +1523,16 @@ function renderHome() {
   let html = '';
   list.forEach((e, idx) => {
     const cat = CATEGORIES[e.category] || CATEGORIES.etkinlik;
-    const d = daysUntil(e.date);
     const isFirst = idx === 0 && state.tab === 'yaklasan';
 
     if (isFirst) {
       const subType = e.subType || cat.label;
       html += `
-        <div class="hero-card" data-id="${e.id}">
+        <div class="hero-card ${e.favorite ? 'fav' : ''}" data-id="${e.id}">
           <div class="hero-label">SIRADAKİ</div>
           <h3 class="hero-title">${escapeHtml(e.title)}</h3>
-          <div class="hero-meta">${fmtShort(e.date)}</div>
+          <div class="hero-meta">${eventDateLabel(e)}${isMultiDay(e) ? ` · ${daysSpan(e.date, e.endDate)} gün` : ''}</div>
+          ${e.description ? `<div class="hero-desc">${escapeHtml(e.description)}</div>` : ''}
           <div class="hero-divider"></div>
           <div class="hero-row">
             <div class="icon-square"><span class="icon"><svg><use href="#${cat.icon}"/></svg></span></div>
@@ -1425,15 +1545,16 @@ function renderHome() {
         </div>`;
     } else {
       html += `
-        <div class="event-card" data-id="${e.id}">
+        <div class="event-card ${e.favorite ? 'fav' : ''}" data-id="${e.id}">
           <div class="icon-square"><span class="icon"><svg><use href="#${cat.icon}"/></svg></span></div>
           <div class="body">
             <div class="title">${escapeHtml(e.title)}</div>
-            <div class="date">${fmtShort(e.date)}</div>
+            <div class="date">${eventDateLabel(e)}</div>
             <div class="cat">${cat.label} · ${escapeHtml(e.scope || '—')}</div>
+            ${e.description ? `<div class="desc-line">${escapeHtml(e.description)}</div>` : ''}
           </div>
           <div class="right">
-            <div class="days-pill">${daysPill(d)}</div>
+            <div class="days-pill">${daysPill(e)}</div>
             <div class="arrow"><span class="icon"><svg><use href="#ic-chev-right"/></svg></span></div>
           </div>
         </div>`;
@@ -1466,12 +1587,49 @@ function openDetail(id) {
   document.getElementById('detailPillText').textContent = cat.label;
   document.getElementById('detailKicker').textContent = cat.label.toUpperCase();
   document.getElementById('detailTitle').textContent = e.title;
-  document.getElementById('detailDay').textContent = fmtDay(e.date);
-  document.getElementById('detailMonthYear').textContent = fmtMonthYear(e.date);
-  document.getElementById('detailWeekday').textContent = fmtWeekday(e.date);
-  document.getElementById('detailTimeText').textContent = e.allDay ? 'Tüm Gün' : (e.schedule && e.schedule.length ? e.schedule[0].time + ' başlangıç' : 'Saat belirtilmedi');
-
   document.getElementById('detailIcon').innerHTML = `<span class="icon"><svg><use href="#${cat.icon}"/></svg></span>`;
+
+  // Date card — different layout for single-day vs multi-day
+  const dateCard = document.getElementById('dateCard');
+  if (isMultiDay(e)) {
+    const s = new Date(e.date + 'T00:00:00');
+    const en = new Date(e.endDate + 'T00:00:00');
+    const sameMonth = s.getMonth() === en.getMonth() && s.getFullYear() === en.getFullYear();
+    const monthLine = sameMonth
+      ? `${MONTHS_TR[s.getMonth()]} ${en.getFullYear()}`
+      : `${MONTHS_TR[s.getMonth()]} – ${MONTHS_TR[en.getMonth()]} ${en.getFullYear()}`;
+    dateCard.classList.add('is-range');
+    dateCard.innerHTML = `
+      <div class="date-icon"><span class="icon"><svg><use href="#ic-calendar"/></svg></span></div>
+      <div class="range-content">
+        <div class="day-range">
+          <span>${fmtDay(e.date)}</span>
+          <span class="rng-arrow">→</span>
+          <span>${fmtDay(e.endDate)}</span>
+        </div>
+        <div class="month">${monthLine}</div>
+        <div class="weekday-range">${fmtWeekdayRange(e.date, e.endDate)}</div>
+      </div>
+      <div class="allday">
+        <span class="icon"><svg><use href="#ic-clock"/></svg></span>
+        <span>${daysSpan(e.date, e.endDate)} gün</span>
+      </div>
+    `;
+  } else {
+    dateCard.classList.remove('is-range');
+    dateCard.innerHTML = `
+      <div class="date-icon"><span class="icon"><svg><use href="#ic-calendar"/></svg></span></div>
+      <div class="day-num">${fmtDay(e.date)}</div>
+      <div class="day-info">
+        <div class="month">${fmtMonthYear(e.date)}</div>
+        <div class="weekday">${fmtWeekday(e.date)}</div>
+      </div>
+      <div class="allday">
+        <span class="icon"><svg><use href="#ic-clock"/></svg></span>
+        <span>${e.allDay ? 'Tüm Gün' : (e.schedule && e.schedule.length ? e.schedule[0].time + ' başlangıç' : 'Saat yok')}</span>
+      </div>
+    `;
+  }
 
   const descCard = document.getElementById('detailDescCard');
   if (e.description && e.description.trim()) {
@@ -1539,6 +1697,7 @@ function openForm(id) {
   document.getElementById('fTitle').value = e ? e.title : '';
   document.getElementById('fSubType').value = e ? (e.subType || '') : '';
   document.getElementById('fDate').value = e ? e.date : plusDays(1);
+  document.getElementById('fEndDate').value = e && e.endDate && e.endDate !== e.date ? e.endDate : '';
   document.getElementById('fDesc').value = e ? (e.description || '') : '';
   document.getElementById('fScope').value = e ? (e.scope || '') : '';
   document.getElementById('fLocation').value = e ? (e.location || '') : '';
@@ -1657,9 +1816,13 @@ function saveForm() {
     toast('Tarih gerekli');
     return;
   }
+  let endDate = document.getElementById('fEndDate').value || '';
+  // If end date equals start or comes before, treat as single-day
+  if (endDate && endDate <= date) endDate = '';
   const payload = {
     title,
     date,
+    endDate,
     category: state.formCategory,
     subType: document.getElementById('fSubType').value.trim(),
     allDay: state.formAllDay,
@@ -1703,8 +1866,9 @@ function deleteEvent() {
 /* ========== ICS EXPORT (Takvime Ekle) ========== */
 function downloadIcs(e) {
   const dtStart = e.date.replace(/-/g, '');
-  const d = new Date(e.date + 'T00:00:00');
-  const dEnd = new Date(d);
+  // ICS DTEND is exclusive — pass the day AFTER the last event day
+  const endIso = isMultiDay(e) ? e.endDate : e.date;
+  const dEnd = new Date(endIso + 'T00:00:00');
   dEnd.setDate(dEnd.getDate() + 1);
   const dtEnd = dEnd.toISOString().split('T')[0].replace(/-/g, '');
   const ics = [
@@ -1773,6 +1937,11 @@ function wire() {
   // Detail favorite
   document.getElementById('favToggle').addEventListener('click', () => {
     if (state.currentEventId) toggleFav(state.currentEventId);
+  });
+
+  // Detail edit button (red)
+  document.getElementById('detailEditBtn').addEventListener('click', () => {
+    if (state.currentEventId) openForm(state.currentEventId);
   });
 
   // Detail CTA
