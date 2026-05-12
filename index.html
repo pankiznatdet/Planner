@@ -896,6 +896,191 @@ input, textarea, select {
 .star-btn.active .icon { color: var(--gold); }
 .star-btn.active svg path { fill: var(--gold); stroke: var(--gold); }
 
+/* ========== TAKVİM VIEW ========== */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0 6px;
+}
+.takvim-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 18px 0 4px;
+}
+.takvim-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+.takvim-stat {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.takvim-pills { display: flex; gap: 8px; margin: 18px 0 10px; }
+.takvim-pills .pill {
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: transparent;
+  transition: all .18s;
+}
+.takvim-pills .pill.active {
+  background: var(--card);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.today-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 14px;
+}
+.today-divider .line { flex: 1; height: 1px; background: var(--border); }
+.today-divider .lbl {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.month-divider {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  margin: 22px 4px 12px;
+}
+
+.agenda-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  align-items: flex-start;
+}
+.date-block {
+  width: 54px;
+  flex-shrink: 0;
+  text-align: center;
+  padding-top: 14px;
+}
+.date-block .num {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.date-block .wd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+.date-block.is-today .num { color: var(--text-primary); }
+.date-block.is-today::after {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--black);
+  margin: 6px auto 0;
+}
+.date-block.is-past .num,
+.date-block.is-past .wd { color: var(--text-faint); }
+
+.agenda-stack { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+
+.agenda-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: transform .15s;
+}
+.agenda-card:active { transform: scale(0.99); }
+.agenda-card.fav { background: var(--mint); }
+.agenda-card .icon-square {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: var(--card-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.agenda-card.fav .icon-square { background: rgba(255, 255, 255, 0.55); }
+.agenda-card .body { flex: 1; min-width: 0; }
+.agenda-card .range-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+.agenda-card .title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14.5px;
+  line-height: 1.3;
+}
+.agenda-card .meta {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.agenda-card .chev {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.empty-day {
+  flex: 1;
+  padding: 18px 4px;
+  color: var(--text-faint);
+  font-size: 13.5px;
+}
+
+.takvim-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-tertiary);
+}
+.takvim-empty .sparkle-mark { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+.takvim-empty p {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+:root { --mint: #DCEEDC; }
+
 /* ========== SOON VIEW ========== */
 .soon-wrap {
   display: flex;
@@ -1185,6 +1370,32 @@ input, textarea, select {
     <button class="delete-btn" id="deleteBtn" style="display:none">Bu Etkinliği Sil</button>
   </section>
 
+  <!-- ========== TAKVİM VIEW ========== -->
+  <section id="view-takvim" class="view">
+    <div class="top-bar">
+      <button class="icon-btn-round" data-back aria-label="Geri">
+        <span class="icon"><svg><use href="#ic-chev-left"/></svg></span>
+      </button>
+      <span class="pill-tag" style="background:transparent;box-shadow:none;color:var(--text-tertiary)">Takvim</span>
+      <button class="icon-btn-round" id="takvimFilterBtn" aria-label="Filtre">
+        <span class="icon"><svg><use href="#ic-filter"/></svg></span>
+      </button>
+    </div>
+
+    <div class="takvim-head">
+      <h2 class="takvim-title" id="takvimTitle">Mayıs 2026</h2>
+      <span class="takvim-stat" id="takvimStat">0 ETKİNLİK</span>
+    </div>
+
+    <div class="takvim-pills">
+      <button class="pill" data-tfilter="tumu">Tümü</button>
+      <button class="pill" data-tfilter="hafta">Bu Hafta</button>
+      <button class="pill" data-tfilter="ay">Bu Ay</button>
+    </div>
+
+    <div id="takvimAgenda"></div>
+  </section>
+
   <!-- ========== SOON VIEW ========== -->
   <section id="view-soon" class="view">
     <div class="soon-wrap">
@@ -1251,7 +1462,8 @@ let state = {
   editingId: null,
   formAllDay: true,
   formCategory: 'etkinlik',
-  formSchedule: []
+  formSchedule: [],
+  takvimFilter: 'tumu'
 };
 
 /* ========== STORAGE ========== */
@@ -1756,6 +1968,175 @@ function renderScheduleList() {
   });
 }
 
+/* ========== RENDER: TAKVİM ========== */
+function showTakvim() {
+  renderTakvim();
+  showView('takvim');
+}
+
+function renderTakvim() {
+  const filter = state.takvimFilter;
+  const tdy = today();
+  const todayIso = tdy.toISOString().split('T')[0];
+
+  // Filter events
+  let events = state.events.slice();
+  if (filter === 'hafta') {
+    const weekEndIso = plusDays(7);
+    events = events.filter(e => {
+      const start = e.date;
+      const end = eventEndDate(e);
+      return end >= todayIso && start <= weekEndIso;
+    });
+  } else if (filter === 'ay') {
+    const y = tdy.getFullYear(), m = tdy.getMonth();
+    events = events.filter(e => {
+      const ds = new Date(e.date + 'T00:00:00');
+      const de = new Date(eventEndDate(e) + 'T00:00:00');
+      // Event overlaps current month
+      return (ds.getFullYear() === y && ds.getMonth() === m) ||
+             (de.getFullYear() === y && de.getMonth() === m) ||
+             (ds < new Date(y, m, 1) && de > new Date(y, m + 1, 0));
+    });
+  }
+
+  events.sort((a, b) => a.date.localeCompare(b.date));
+
+  // Title (always shows current month for Tümü/Ay; "Bu Hafta" for hafta)
+  const titleEl = document.getElementById('takvimTitle');
+  if (filter === 'hafta') titleEl.textContent = 'Bu Hafta';
+  else titleEl.textContent = `${MONTHS_TR[tdy.getMonth()]} ${tdy.getFullYear()}`;
+
+  document.getElementById('takvimStat').textContent =
+    `${events.length} ETKİNLİK`;
+
+  // Pills active state
+  document.querySelectorAll('.takvim-pills .pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.tfilter === filter);
+  });
+
+  // Group by date
+  const groups = new Map();
+  events.forEach(e => {
+    if (!groups.has(e.date)) groups.set(e.date, []);
+    groups.get(e.date).push(e);
+  });
+
+  const container = document.getElementById('takvimAgenda');
+
+  if (events.length === 0) {
+    let msg = 'Henüz etkinlik yok.';
+    if (filter === 'hafta') msg = 'Bu hafta etkinlik yok.';
+    else if (filter === 'ay') msg = 'Bu ay etkinlik yok.';
+    container.innerHTML = `
+      <div class="takvim-empty">
+        <div class="sparkle-mark"><span class="icon"><svg><use href="#ic-sparkle"/></svg></span></div>
+        <p>${msg}</p>
+      </div>`;
+    return;
+  }
+
+  // Build rendered rows; insert BUGÜN divider at the right place
+  const dates = Array.from(groups.keys());
+  let html = '';
+  let bugunInserted = false;
+
+  // If today is before the first event date and filter shows today,
+  // insert "BUGÜN · X MAYIS" divider + empty row at top (only for hafta/tumu)
+  const showBugunMarker = filter !== 'ay' || (tdy.getMonth() === new Date(dates[0] + 'T00:00:00').getMonth());
+
+  // Determine if today already has events; if not and filter is hafta/tumu, insert empty today row
+  const todayHasEvents = groups.has(todayIso);
+  const todayIsInRange = dates.some(d => d >= todayIso) || todayHasEvents;
+
+  function bugunDividerHtml() {
+    const d = tdy.getDate();
+    return `<div class="today-divider"><div class="line"></div><div class="lbl">Bugün · ${d} ${MONTHS_TR[tdy.getMonth()]}</div><div class="line"></div></div>`;
+  }
+
+  function emptyTodayRow() {
+    return `
+      <div class="agenda-row">
+        <div class="date-block is-today">
+          <div class="num">${tdy.getDate()}</div>
+          <div class="wd">${WEEKDAYS_SHORT_TR[tdy.getDay()]}</div>
+        </div>
+        <div class="empty-day">Bugün etkinlik yok.</div>
+      </div>`;
+  }
+
+  // If today has no events but should be in the visible range, inject today marker + empty row
+  // For Tümü/Hafta: today is always in range. For Ay: today is in current month (which is what's shown).
+  if (!todayHasEvents) {
+    html += bugunDividerHtml() + emptyTodayRow();
+    bugunInserted = true;
+  }
+
+  let lastMonth = null;
+  dates.forEach(dateIso => {
+    const d = new Date(dateIso + 'T00:00:00');
+    const monthKey = `${d.getFullYear()}-${d.getMonth()}`;
+
+    // Month divider for Tümü when crossing months
+    if (filter === 'tumu' && monthKey !== lastMonth && lastMonth !== null) {
+      html += `<div class="month-divider">${MONTHS_TR[d.getMonth()]} ${d.getFullYear()}</div>`;
+    }
+    lastMonth = monthKey;
+
+    // Insert BUGÜN divider before today's row if not yet done
+    if (!bugunInserted && dateIso === todayIso) {
+      html += bugunDividerHtml();
+      bugunInserted = true;
+    } else if (!bugunInserted && dateIso > todayIso && (filter === 'tumu' || filter === 'hafta')) {
+      // We crossed today without it being in the data; add marker + empty row
+      html += bugunDividerHtml() + emptyTodayRow();
+      bugunInserted = true;
+    }
+
+    const isPastDate = dateIso < todayIso;
+    const isToday = dateIso === todayIso;
+    const dateClasses = ['date-block'];
+    if (isToday) dateClasses.push('is-today');
+    else if (isPastDate) dateClasses.push('is-past');
+
+    const groupEvents = groups.get(dateIso);
+    const cards = groupEvents.map(e => {
+      const cat = CATEGORIES[e.category] || CATEGORIES.etkinlik;
+      const md = isMultiDay(e);
+      const subType = e.subType || cat.label;
+      const timeStr = e.allDay ? 'Tüm Gün' : (e.schedule && e.schedule.length ? e.schedule[0].time : '');
+      const metaParts = [cat.label, subType];
+      if (timeStr) metaParts.push(timeStr);
+      return `
+        <div class="agenda-card ${e.favorite ? 'fav' : ''}" data-id="${e.id}">
+          <div class="icon-square"><span class="icon"><svg><use href="#${cat.icon}"/></svg></span></div>
+          <div class="body">
+            ${md ? `<div class="range-meta">${eventDateLabel(e)} · ${daysSpan(e.date, e.endDate)} gün</div>` : ''}
+            <div class="title">${escapeHtml(e.title)}</div>
+            <div class="meta">${metaParts.map(escapeHtml).join(' · ')}</div>
+          </div>
+          <div class="chev">›</div>
+        </div>`;
+    }).join('');
+
+    html += `
+      <div class="agenda-row">
+        <div class="${dateClasses.join(' ')}">
+          <div class="num">${d.getDate()}</div>
+          <div class="wd">${WEEKDAYS_SHORT_TR[d.getDay()]}</div>
+        </div>
+        <div class="agenda-stack">${cards}</div>
+      </div>`;
+  });
+
+  container.innerHTML = html;
+
+  // Wire card taps
+  container.querySelectorAll('.agenda-card[data-id]').forEach(el => {
+    el.addEventListener('click', () => openDetail(el.dataset.id));
+  });
+}
+
 /* ========== RENDER: SOON ========== */
 function showSoon(which) {
   const map = {
@@ -1775,8 +2156,8 @@ function showView(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
 
-  // FAB only on home
-  document.getElementById('newEventBtn').style.display = name === 'home' ? '' : 'none';
+  // FAB on home + takvim
+  document.getElementById('newEventBtn').style.display = (name === 'home' || name === 'takvim') ? '' : 'none';
 
   // Detail CTA only on detail
   const cta = document.getElementById('addCalBtn');
@@ -1786,6 +2167,7 @@ function showView(name) {
   document.querySelectorAll('.tabbar-item').forEach(t => {
     const isActive =
       (name === 'home'        && t.dataset.nav === 'home') ||
+      (name === 'takvim'      && t.dataset.nav === 'takvim') ||
       (name === 'soon'        && t.dataset.nav === state.currentSoon) ||
       (name === 'detail'      && t.dataset.nav === 'home') ||
       (name === 'form'        && t.dataset.nav === 'home');
@@ -1973,6 +2355,8 @@ function wire() {
       const nav = t.dataset.nav;
       if (nav === 'home') {
         showView('home');
+      } else if (nav === 'takvim') {
+        showTakvim();
       } else {
         state.currentSoon = nav;
         showSoon(nav);
@@ -1983,6 +2367,19 @@ function wire() {
   // Filter button — for v1, just toast
   document.getElementById('filterBtn').addEventListener('click', () => {
     toast('Filtre özelliği yakında');
+  });
+
+  // Takvim filter button (in takvim view)
+  document.getElementById('takvimFilterBtn').addEventListener('click', () => {
+    toast('Filtre özelliği yakında');
+  });
+
+  // Takvim filter pills
+  document.querySelectorAll('.takvim-pills .pill').forEach(p => {
+    p.addEventListener('click', () => {
+      state.takvimFilter = p.dataset.tfilter;
+      renderTakvim();
+    });
   });
 
   // Detail title also opens form
